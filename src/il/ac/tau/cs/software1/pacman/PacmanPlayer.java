@@ -41,10 +41,6 @@ public class PacmanPlayer extends PacmanGameObject {
 		
 		else if (other instanceof PacmanBonus) {
 			PacmanBonus bonus = (PacmanBonus) other;
-			
-			// TODO (Question 9): replace the two lines below.
-			// Instead of eating (destroying) the bonus, the player should stash it in the inventory,
-			// but only if it is not too heavy to carry. See the assignment for the exact rules.
 			if(this.inventoryComp.getInventory().getTotalWeight() + bonus.getWeight() <= this.inventoryComp.getMaxWeight()) {
 				bonus.getTransformComponent().position = this.inventoryComp.getInventoryPosition();
 				this.inventoryComp.getInventory().collect(bonus);
