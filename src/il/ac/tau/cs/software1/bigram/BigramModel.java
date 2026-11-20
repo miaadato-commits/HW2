@@ -1,5 +1,7 @@
 package il.ac.tau.cs.software1.bigram;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Locale;
 
@@ -79,8 +81,35 @@ public class BigramModel {
      * @post: mBigramCounts = prev(mBigramCounts)
      */
     public String[] buildVocabularyIndex(String fileName) throws IOException { // Question 1
-        // TODO: implement
-        return null;
+        BufferedReader reader = new BufferedReader(new FileReader(fileName)); // build reader
+        StringBuilder legal_words = new StringBuilder(""); // mutable string
+        String line;
+        int count = 0;
+        while ((count < MAX_VOCABULARY_SIZE) && ((line = reader.readLine()) != null)) { // reads line-line
+            String trimmed = line.trim(); // ignors edge spaces
+            if (trimmed.isEmpty()) {
+                continue; // skip on empty lines
+            }
+            String[] words_to_read = trimmed.split("\\s+"); // split the line to words
+            for(String word : words_to_read) { 
+                if (count >= MAX_VOCABULARY_SIZE){
+                    break;
+                }
+                String normalized_word = normalizeWord(word);
+                if(normalized_word != null) { // checks the word is legal
+                    if(legal_words.indexOf(" " + normalized_word + " ") == -1) { // checks if the word NOT exist in vocabulary 
+                        legal_words.append(" " + normalized_word + " ");
+                        count++;
+                    }
+                }
+            }
+        }
+        reader.close();
+        if (count == 0) {
+            return new String[0];
+        }
+        String[] voc = legal_words.toString().trim().split("\\s+"); 
+        return voc;
     }
 
     /*
