@@ -173,7 +173,30 @@ public class BigramModel {
      * @pre: fileName is a legal file path
      */
     public void loadModel(String fileName) throws IOException { // Question 4
-        // TODO: implement
+        BufferedReader reader_voc = new BufferedReader(new FileReader(fileName + VOC_FILE_SUFFIX)); // build reader
+        String line = reader_voc.readLine();
+        String[] voc_describe_arr = line.trim().split("\\s+");
+        int voc_len = Integer.parseInt(voc_describe_arr[0]); // mVocabulary length
+        this.mVocabulary = new String[voc_len];
+        while ((line = reader_voc.readLine()) != null) { // reads line-line
+            String[] voc_word = line.trim().split(",");
+            int i = Integer.parseInt(voc_word[0]); // place in mVocabulary
+            String word = voc_word[1]; // word to write
+            this.mVocabulary[i] = word;
+        }
+        reader_voc.close();
+        this.mBigramCounts = new int[voc_len][voc_len]; // create matrix
+        BufferedReader reader_count = new BufferedReader(new FileReader(fileName + COUNTS_FILE_SUFFIX)); // build reader
+        String line_count;
+        while ((line_count = reader_count.readLine()) != null) { // reads line-line
+            String[] get_couple_appears = line_count.trim().split(":");
+            int appears = Integer.parseInt(get_couple_appears[1]);
+            String[] get_x_y = get_couple_appears[0].trim().split(",");
+            int x = Integer.parseInt(get_x_y[0]);
+            int y = Integer.parseInt(get_x_y[1]);
+            this.mBigramCounts[x][y] = appears;
+        }
+        reader_count.close();
     }
 
     /*
