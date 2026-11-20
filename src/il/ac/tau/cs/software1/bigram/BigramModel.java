@@ -117,8 +117,29 @@ public class BigramModel {
      * @post: mBigramCounts = prev(mBigramCounts)
      */
     public int[][] buildCountsArray(String fileName, String[] vocabulary) throws IOException { // Question 2
-        // TODO: implement
-        return null;
+        int n = vocabulary.length;
+        int[][] counts_matrix = new int[n][n]; // creates matrix, cells initialized to 0
+        BufferedReader reader = new BufferedReader(new FileReader(fileName)); // build reader
+        String line;
+        while ((line = reader.readLine()) != null) { // reads line-line
+            String trimmed = line.trim(); // ignors edge spaces
+            if (trimmed.isEmpty()) {
+                continue; // skip on empty lines
+            }
+            String[] words_to_read = trimmed.split("\\s+"); // split the line to words
+            for(int i=0; i < words_to_read.length-1; i++) {
+                String word_x = normalizeWord(words_to_read[i]);
+                String word_y = normalizeWord(words_to_read[i+1]);
+                int x = findIndex(vocabulary, word_x);
+                int y = findIndex(vocabulary, word_y);
+                if( (x == ELEMENT_NOT_FOUND) || (y == ELEMENT_NOT_FOUND)) {
+                    continue;
+                }
+                counts_matrix[x][y]++;
+            }
+        }
+        reader.close();
+        return counts_matrix;
     }
 
     /*
